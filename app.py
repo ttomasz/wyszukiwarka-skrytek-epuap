@@ -8,6 +8,8 @@ from psycopg2.extras import RealDictCursor
 from os import environ
 
 app = Flask(__name__)
+conn = psycopg2.connect(environ["DB_STRING"], sslmode='require')
+cur = conn.cursor(cursor_factory=RealDictCursor)
 
 
 @app.route("/search/<txt>", methods=["GET"])
@@ -25,6 +27,4 @@ def index():
 
 
 if __name__ == '__main__':
-    conn = psycopg2.connect(environ["DB_STRING"])
-    cur = conn.cursor(cursor_factory=RealDictCursor)
     app.run()
