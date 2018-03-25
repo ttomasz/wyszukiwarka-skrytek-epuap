@@ -10,26 +10,26 @@ from psycopg2.extras import RealDictCursor
 from os import environ
 
 app = Flask(__name__)
-conn = psycopg2.connect(environ["DB_STRING"])
-cur = conn.cursor(cursor_factory=RealDictCursor)
+conn = None
+
+
+def get_db():
+    global conn
+    if conn is None:
+        conn = psycopg2.connect(environ["DB_STRING"])
+    return conn
 
 
 @app.route("/search/<txt>", methods=["GET"])
 def data(txt):
-    global cur, conn
-    s = str(txt).strip().replace(" ", "%")
-    try:
+    c = get_db()
+    with c.cursor(cursor_factory=RealDictCursor) as cur:
+        s = str(txt).strip().replace(" ", "%")
+
         cur.callproc('search', (s,))
         json = jsonify(cur.fetchall())
-        return json
-    except Exception as e:
-        print(e)
-        # try to reconnect and query again
-        conn = psycopg2.connect(environ["DB_STRING"])
-        cur = conn.cursor(cursor_factory=RealDictCursor)
-        cur.callproc('search', (s,))
-        json = jsonify(cur.fetchall())
-        return json
+
+    return json
 
 
 @app.route("/", methods=["GET"])
