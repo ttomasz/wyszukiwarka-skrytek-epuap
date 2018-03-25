@@ -22,11 +22,13 @@ def get_db():
 
 @app.route("/search/<txt>", methods=["GET"])
 def data(txt):
-    c = get_db()
-    with c.cursor(cursor_factory=RealDictCursor) as cur:
+    with get_db().cursor(cursor_factory=RealDictCursor) as cur:
         s = str(txt).strip().replace(" ", "%")
 
-        cur.callproc('search', (s,))
+        try:
+            cur.callproc('search', (s,))
+        except Exception as e:
+            print(e)
         json = jsonify(cur.fetchall())
 
     return json
