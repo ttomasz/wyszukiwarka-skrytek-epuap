@@ -27,6 +27,7 @@ def index():
 
 
 if __name__ == '__main__':
+    global conn, cur
     conn = psycopg2.connect(environ["DB_STRING"])
     cur = conn.cursor(cursor_factory=RealDictCursor)
     app.run()
