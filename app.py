@@ -10,16 +10,20 @@ from psycopg2.extras import RealDictCursor
 from os import environ
 
 app = Flask(__name__)
+conn = psycopg2.connect(environ["DB_STRING"])
+cur = conn.cursor(cursor_factory=RealDictCursor)
 
 
 @app.route("/search/<txt>", methods=["GET"])
 def data(txt):
-    with conn.cursor(cursor_factory=RealDictCursor) as cur:
-        s = str(txt).strip().replace(" ", "%")
+    s = str(txt).strip().replace(" ", "%")
+    try:
         cur.callproc('search', (s,))
         json = jsonify(cur.fetchall())
-
-    return json
+        return json
+    except Exception as e:
+        print(e)
+        return None
 
 
 @app.route("/", methods=["GET"])
@@ -29,5 +33,4 @@ def index():
 
 
 if __name__ == '__main__':
-    conn = psycopg2.connect(environ["DB_STRING"])
     app.run()
