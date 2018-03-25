@@ -14,10 +14,12 @@ app = Flask(__name__)
 
 @app.route("/search/<txt>", methods=["GET"])
 def data(txt):
-    s = str(txt).strip().replace(" ", "%")
-    cur.callproc('search', (s,))
+    with conn.cursor(cursor_factory=RealDictCursor) as cur:
+        s = str(txt).strip().replace(" ", "%")
+        cur.callproc('search', (s,))
+        json = jsonify(cur.fetchall())
 
-    return jsonify(cur.fetchall())
+    return json
 
 
 @app.route("/", methods=["GET"])
@@ -27,7 +29,5 @@ def index():
 
 
 if __name__ == '__main__':
-    global conn, cur
     conn = psycopg2.connect(environ["DB_STRING"])
-    cur = conn.cursor(cursor_factory=RealDictCursor)
     app.run()
