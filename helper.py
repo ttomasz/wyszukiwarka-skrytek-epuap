@@ -43,14 +43,16 @@ def clean_text(text: str):
 
 def clean_text_gently(text: str):
     """Method tries to clean redundant whitespaces and similar without too much interference with the data.
-    Also deletes '(miasto)' and '(wieś)' strings."""
+    Also deletes '(miasto)', (dzielnica m.st. Warszawy), and '(wieś)' strings."""
 
     city = re.compile("\(miasto\)")
     village = re.compile("\(wieś\)")
+    warsaw = re.compile("\(dzielnica m.st. Warszawy\)")
     multi_spaces = re.compile("\s\s+")
 
     text = city.sub("", text)
     text = village.sub("", text)
+    text = warsaw.sub(" - Warszawa ", text)
     text = multi_spaces.sub(" ", text)
 
     return text.strip()
@@ -131,6 +133,8 @@ def prepare_schema():
     END; $$
      
     LANGUAGE plpgsql;
+    
+    grant select on skrytki to appacc;
     """
 
     with psycopg2.connect(environ["DB_STRING"]) as conn:
