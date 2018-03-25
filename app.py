@@ -16,6 +16,7 @@ cur = conn.cursor(cursor_factory=RealDictCursor)
 
 @app.route("/search/<txt>", methods=["GET"])
 def data(txt):
+    global cur, conn
     s = str(txt).strip().replace(" ", "%")
     try:
         cur.callproc('search', (s,))
@@ -23,7 +24,12 @@ def data(txt):
         return json
     except Exception as e:
         print(e)
-        return None
+        # try to reconnect and query again
+        conn = psycopg2.connect(environ["DB_STRING"])
+        cur = conn.cursor(cursor_factory=RealDictCursor)
+        cur.callproc('search', (s,))
+        json = jsonify(cur.fetchall())
+        return json
 
 
 @app.route("/", methods=["GET"])
