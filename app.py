@@ -1,5 +1,7 @@
 """This file contains the app.
 Database search functionality and Flask app have been put together to fit into 1 free Heroku dyno (container).
+Requires environmental variable:
+DB_STRING - psycopg2 string to connect to database
 """
 
 from flask import Flask, jsonify, render_template
