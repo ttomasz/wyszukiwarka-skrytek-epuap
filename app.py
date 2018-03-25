@@ -16,7 +16,10 @@ conn = None
 def get_db():
     global conn
     if conn is None:
-        conn = psycopg2.connect(environ["DB_STRING"])
+        try:
+            conn = psycopg2.connect(environ["DB_STRING"])
+        except Exception as e:
+            print(e)
     return conn
 
 
