@@ -18,21 +18,19 @@ var transform = {
 
 function getAddresses (param) {
     $("#annotation").html("");
-    xmlhttp = new XMLHttpRequest();
-    xmlhttp.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
 
-            $("#t").empty().json2html(this.responseText, transform);
+    $.get({ url: "search/"+encodeURIComponent(param) })
+        .done(function(response){
 
-            if (this.responseText === "[]\n"){
+            $("#t").empty().json2html(response, transform);
+
+            if (response.length == 0){
                 $("#annotation").html("<div class=\"alert alert-warning\" role=\"alert\">Nie znaleziono wyników dla tego zapytania.</div>");
             }
-        } else if (this.readyState == 4 && this.status != 200) {
+        })
+        .fail(function(){
             alert("Coś poszło nie tak przy wyszukiwaniu. Spróbuj ponownie lub zmień wyszukiwany tekst.");
-        }
-    }
-    xmlhttp.open("GET", "search/"+param, true)
-    xmlhttp.send()
+        });
 };
 
 $('#formId').submit(function() {
