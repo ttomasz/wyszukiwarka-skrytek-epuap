@@ -1,6 +1,5 @@
 <!doctype html>
 <html lang="pl">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -10,14 +9,12 @@
 
     <link rel="stylesheet" href="../static/css/bootstrap.min.css">
     <link rel="stylesheet" href="../static/css/footer.css">
-
-    <script src="static/scripts.js"></script>
 </head>
 <body>
     <div class="container">
         <h1>Prosta wyszukiwarka adresów skrytek ePUAP</h1>
 
-        <form>
+        <form id="formId">
             <div class="form-row align-items-center">
                 <div class="col">
                     <label class="sr-only" for="inlineFormInput">Wyszukiwanie</label>
@@ -25,11 +22,12 @@
                            placeholder="Szukaj po REGON, nazwie lub adresie...">
                 </div>
                 <div class="col-auto">
-                    <button type="button" class="btn btn-primary mb-2"
-                            onclick=getAddresses(document.getElementById("inlineFormInput").value)>Search</button>
+                    <button type="submit" class="btn btn-primary mb-2">Szukaj</button>
                 </div>
             </div>
         </form>
+
+        <div id="annotation"></div>
 
         <div>
             <table class="table">
@@ -46,21 +44,18 @@
         </div>
     </div>
 
-    <script>
-        document.getElementById("inlineFormInput").addEventListener("keypress", function(event) {
-            if (event.keyCode == 13) {
-                event.preventDefault();
-                getAddresses(document.getElementById("inlineFormInput").value)
-            }
-        });
-    </script>
-</body>
+    <script src="static/jquery-3.3.1.min.js"></script>
+    <script src="static/json2html.js"></script>
+    <script src="static/jquery.json2html.js"></script>
+    <script src="static/scripts.js"></script>
+
     <footer class="footer">
         <div class="container">
-            <span class="text-secondary">
-                ©2018: Tomasz Taraś;
-                <a href="https://github.com/ttomasz/wyszukiwarka-skrytek-epuap" class="text-secondary">Project available on github</a>
-            </span>
+        <span class="text-secondary">
+            ©2018: Tomasz Taraś;
+            <a href="https://github.com/ttomasz/wyszukiwarka-skrytek-epuap" class="text-secondary">Project available on github</a>
+        </span>
         </div>
     </footer>
+</body>
 </html>

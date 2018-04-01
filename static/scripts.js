@@ -6,23 +6,37 @@ function pr(str) {
     }
 };
 
+var transform = {
+    "<>":"tr",
+    "html":[
+        {"<>": "td", "html": "${nazwa}"},
+        {"<>": "td", "html": "${regon}"},
+        {"<>": "td", "html": "${adres}"},
+        {"<>": "td", "html": "${skrytka}"}
+    ]
+};
+
 function getAddresses (param) {
-    var xmlhttp, myObj, x, txt = "";
+    $("#annotation").html("");
     xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
-            myObj = JSON.parse(this.responseText);
-            for (x in myObj) {
-                txt += "<tr>";
-                txt += "<td>" + pr(myObj[x].nazwa) + "</td>";
-                txt += "<td>" + pr(myObj[x].regon) + "</td>";
-                txt += "<td>" + myObj[x].adres + "</td>";
-                txt += "<td>" + myObj[x].skrytka + "</td>";
-                txt += "</tr>";
+
+            $("#t").empty().json2html(this.responseText, transform);
+
+            if (this.responseText === "[]\n"){
+                $("#annotation").html("<div class=\"alert alert-warning\" role=\"alert\">Nie znaleziono wyników dla tego zapytania.</div>");
             }
-            document.getElementById("t").innerHTML = txt;
+        } else if (this.readyState == 4 && this.status != 200) {
+            alert("Coś poszło nie tak przy wyszukiwaniu. Spróbuj ponownie lub zmień wyszukiwany tekst.");
         }
     }
     xmlhttp.open("GET", "search/"+param, true)
     xmlhttp.send()
 };
+
+$('#formId').submit(function() {
+    var str = $("#inlineFormInput").val();
+    if (str != "") { getAddresses(str); }
+    return false;
+});
