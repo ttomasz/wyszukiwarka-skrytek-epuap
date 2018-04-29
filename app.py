@@ -24,12 +24,26 @@ def get_db():
 
 
 @app.route("/search/<txt>", methods=["GET"])
-def data(txt):
+def data(txt: str, czy_urzad: bool = False, limit: int = 100):
     with get_db().cursor(cursor_factory=RealDictCursor) as cur:
         s = str(txt).strip().replace(" ", "%")
+        s = "%" + s + "%"
 
         try:
-            cur.callproc('search', (s,))
+            cur.callproc('search', (str(txt).strip(), s, czy_urzad, limit))
+        except Exception as e:
+            print(e)
+        json = jsonify(cur.fetchall())
+
+    return json
+
+
+@app.route("/get_uris/<id>")
+def get_uris(id):
+    with get_db().cursor(cursor_factory=RealDictCursor) as cur:
+        try:
+            print(int(id))
+            cur.execute("SELECT skrytki FROM skrytki2 WHERE id = %s", (int(id),))
         except Exception as e:
             print(e)
         json = jsonify(cur.fetchall())
