@@ -4,7 +4,7 @@ Requires environmental variable:
 DB_STRING - psycopg2 string to connect to database
 """
 
-from flask import Flask, jsonify, render_template
+from flask import Flask, jsonify, render_template, request
 import psycopg2
 from psycopg2.extras import RealDictCursor
 from os import environ
@@ -23,8 +23,15 @@ def get_db():
     return conn
 
 
-@app.route("/search/<txt>", methods=["GET"])
-def data(txt: str, czy_urzad: bool = False, limit: int = 100):
+@app.route("/search", methods=["GET"])
+def data():
+    czy_urzad = request.args.get("czy_urzad", default=False)
+    limit = request.args.get("limit", default=100)
+    txt = request.args.get("query")
+
+    if len(txt) > 200:
+        return None
+
     with get_db().cursor(cursor_factory=RealDictCursor) as cur:
         s = str(txt).strip().replace(" ", "%")
         s = "%" + s + "%"

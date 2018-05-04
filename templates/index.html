@@ -27,6 +27,40 @@
             </div>
         </form>
 
+        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#searchOptions" aria-expanded="false" aria-controls="searchOptions">Pokaż/ukryj opcje zaawansowane wyszukiwania...</button>
+        <div class="collapse" id="searchOptions">
+            <div class="h6">Ogranicz wyszukiwanie podmiotów do:
+                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                    <label class="btn btn-secondary active">
+                        <input type="radio" name="options1" id="tylkoUrzedy" value="1" autocomplete="off" checked>Tylko urzędy
+                    </label>
+                    <label class="btn btn-secondary">
+                        <input type="radio" name="options1" id="wszystkiePodmioty" value="0" autocomplete="off">Wszystkie podmioty
+                    </label>
+                </div>
+            </div>
+
+            <div class="h6">Ogranicz liczbę wyników do:
+                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                    <label class="btn btn-secondary">
+                        <input type="radio" name="options2" id="limit10" value="10" autocomplete="off">10
+                    </label>
+                    <label class="btn btn-secondary">
+                        <input type="radio" name="options2" id="limit50" value="50" autocomplete="off">50
+                    </label>
+                    <label class="btn btn-secondary active">
+                        <input type="radio" name="options2" id="limit100" value="100" autocomplete="off" checked>100
+                    </label>
+                    <label class="btn btn-secondary">
+                        <input type="radio" name="options2" id="limit200" value="200" autocomplete="off">200
+                    </label>
+                    <label class="btn btn-secondary">
+                        <input type="radio" name="options2" id="limitNo" value="999999" autocomplete="off">Pokaż wszystkie
+                    </label>
+                </div>
+            </div>
+        </div>
+
         <div id="annotation"></div>
 
         <div>
@@ -37,16 +71,36 @@
                         <th>REGON</th>
                         <th>Adres</th>
                         <th>Skrytka EPUAP</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody id="t"></tbody>
             </table>
         </div>
     </div>
+    
+    <div class="modal fade" id="allAddressesModal" tabindex="-1" role="dialog" aria-labelledby="allAddressesModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="allAddressesModalLabel">Lista wszystkich adresów skrytek dla tego podmiotu:</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body" id="modalBody"></div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <script src="static/jquery-3.3.1.min.js"></script>
     <script src="static/json2html.js"></script>
     <script src="static/jquery.json2html.js"></script>
+    <script src="static/popper.min.js"></script>
+    <script src="static/bootstrap.min.js"></script>
     <script src="static/scripts.js"></script>
 
     <footer class="footer">
