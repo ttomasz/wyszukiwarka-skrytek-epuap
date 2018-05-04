@@ -133,7 +133,7 @@ def mark_territorial_entities(dataframe):
     def t(s: str):
         if re.search(pattern="(urząd gmin)|(urząd miasta)|(urząd miejski)|(gmina)|(miasto)", string=s, flags=re.I) and \
             not re.search(
-                pattern="(sąd)|(prokurat)|(ośrodek)|(szkoła)|(zespół)|(związek)|(biuro)|(EC1)|(centrum usług)|(instytucja)|(powiat)|(urząd skarbowy)",
+                pattern="(sąd)|(prokurat)|(ośrodek)|(szkoła)|(zespół)|(związek)|(biuro)|(EC1)|(centrum usług)|(centrum opiek)|(instytucja)|(powiatow)|(urząd skarbowy)|(urząd pracy)|(zarząd)",
                 string=s,
                 flags=re.I):
             return 2
