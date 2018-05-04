@@ -182,6 +182,7 @@ def prepare_schema():
     
     DROP TABLE IF EXISTS skrytki2;
     DROP TABLE IF EXISTS skrytki;
+    DROP FUNCTION IF EXISTS search(text,text,boolean,integer); -- was needed for migration to new schema
     
     CREATE TABLE skrytki (
         id integer PRIMARY KEY,
@@ -204,7 +205,7 @@ def prepare_schema():
     CREATE INDEX idx_id ON skrytki2 (id);
     
     CREATE OR REPLACE FUNCTION public.search(IN raw_txt text, IN wildcards_txt text, IN tylko_urzedy boolean, IN max_records integer)
-      RETURNS TABLE(nazwa text, regon text, adres text, skrytka text) AS
+      RETURNS TABLE(nazwa text, regon text, adres text, skrytka text, id integer) AS
     $BODY$
       DECLARE
         i integer := 0;
@@ -214,7 +215,7 @@ def prepare_schema():
       
         RETURN QUERY
           -- szukaj REGON
-          SELECT s.nazwa, s.regon, s.adres, s.skrytka
+          SELECT s.nazwa, s.regon, s.adres, s.skrytka, s.id
           FROM skrytki s
           WHERE s.regon = raw_txt AND s.kategoria > i;
     
@@ -222,7 +223,7 @@ def prepare_schema():
         IF NOT FOUND THEN 
           RETURN QUERY
           -- szukaj po adresie lub nazwie (metoda LIKE)
-          SELECT s.nazwa, s.regon, s.adres, s.skrytka
+          SELECT s.nazwa, s.regon, s.adres, s.skrytka, s.id
           FROM skrytki s
           WHERE (s.nazwa ilike wildcards_txt OR s.adres ilike wildcards_txt) AND s.kategoria > i
           ORDER BY greatest(similarity(s.nazwa, raw_txt), similarity(s.adres, raw_txt)) DESC
@@ -233,7 +234,7 @@ def prepare_schema():
         IF NOT FOUND THEN 
           RETURN QUERY
           -- szukaj po adresie lub nazwie (metoda SIMILARITY)
-          SELECT s.nazwa, s.regon, s.adres, s.skrytka
+          SELECT s.nazwa, s.regon, s.adres, s.skrytka, s.id
           FROM skrytki s
           WHERE (s.nazwa % raw_txt OR s.adres % raw_txt) AND s.kategoria > i
           LIMIT max_records;
